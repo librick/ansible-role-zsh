@@ -1,0 +1,21 @@
+---
+- name: Ensure /etc/zsh directory exists.
+  ansible.builtin.file:
+    path: /etc/zsh
+    state: directory
+    recurse: false
+    group: root
+    owner: root
+    mode: 0755
+  become: true
+  become_user: root
+
+- name: Ensure /etc/zsh/zshenv file is in place.
+  ansible.builtin.copy:
+    src: zshenv
+    dest: /etc/zsh/zshenv
+    group: root
+    owner: root
+    mode: 0644
+  become: true
+  become_user: root

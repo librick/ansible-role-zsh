@@ -1,0 +1,7 @@
+---
+- name: Import zshenv tasks.
+  ansible.builtin.import_tasks: 01-set-zshenv.yml
+- name: Import zsh tasks.
+  ansible.builtin.import_tasks: 02-install-zsh.yml
+- name: Import omz tasks.
+  ansible.builtin.import_tasks: 03-install-oh-my-zsh.yml

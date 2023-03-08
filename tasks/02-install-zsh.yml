@@ -1,0 +1,64 @@
+---
+- name: Ensure zsh and lsd apt packages are installed.
+  ansible.builtin.apt:
+    name:
+      - zsh
+      - lsd
+    state: present
+  become: true
+  become_user: root
+  environment:
+    ZDOTDIR: "{{ zsh_zdotdir }}"
+
+# The acl apt package includes the setfacl binary
+# which is required by Ansible to handle permissions when using
+# become_user with non-root users.
+# See: https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_privilege_escalation.html#risks-of-becoming-an-unprivileged-user.
+# See: https://packages.debian.org/sid/acl
+- name: Ensure acl apt package is installed.
+  ansible.builtin.apt:
+    name: acl
+    state: present
+  become: true
+  become_user: root
+
+- name: Ensure ~/.zshrc file does not exist.
+  ansible.builtin.file:
+    path: "/home/{{ zsh_user }}/.zshrc"
+    state: absent
+  become: true
+  become_user: "{{ zsh_user }}"
+
+- name: Ensure ~/.zsh_history file does not exist.
+  ansible.builtin.file:
+    path: "/home/{{ zsh_user }}/.zsh_history"
+    state: absent
+  become: true
+  become_user: "{{ zsh_user }}"
+
+- name: Ensure that zsh directory exists.
+  ansible.builtin.file:
+    path: "{{ zsh_zdotdir }}"
+    group: "{{ zsh_user }}"
+    owner: "{{ zsh_user }}"
+    mode: 0755
+    state: directory
+  become: true
+  become_user: "{{ zsh_user }}"
+
+- name: Ensure that .zshrc file is in place.
+  ansible.builtin.copy:
+    src: zshrc
+    dest: "{{ zsh_zdotdir }}/.zshrc"
+    group: "{{ zsh_user }}"
+    owner: "{{ zsh_user }}"
+    mode: 0644
+  become: true
+  become_user: "{{ zsh_user }}"
+
+- name: Ensure that zsh is the current shell for zsh_user.
+  ansible.builtin.user:
+    name: "{{ zsh_user }}"
+    shell: "/usr/bin/zsh"
+  become: true
+  become_user: root

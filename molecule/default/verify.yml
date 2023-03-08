@@ -1,0 +1,104 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: true
+
+  tasks:
+  - name: Stat /etc/zsh/zshenv file.
+    ansible.builtin.stat:
+      path: "/etc/zsh/zshenv"
+    become: true
+    become_user: "{{ zsh_user }}"
+    register: r_stat_etc_zshenv
+  
+  - name: Assert /etc/zsh/zshenv file exists with correct permissions.
+    ansible.builtin.assert:
+      that:
+        - r_stat_etc_zshenv.stat.isdir is defined
+        - not r_stat_etc_zshenv.stat.isdir
+        - r_stat_etc_zshenv.stat.gr_name is defined
+        - r_stat_etc_zshenv.stat.gr_name == "root"
+        - r_stat_etc_zshenv.stat.pw_name is defined
+        - r_stat_etc_zshenv.stat.pw_name == "root"
+        - r_stat_etc_zshenv.stat.mode == "0644"
+
+  - name: Stat ~/.config/zsh directory.
+    ansible.builtin.stat:
+      path: "/home/{{ zsh_user }}/.config/zsh"
+    become: true
+    become_user: "{{ zsh_user }}"
+    register: r_stat_config_zsh_directory
+
+  - name: Assert ~/.config/zsh directory exists with correct permissions.
+    ansible.builtin.assert:
+      that:
+        - r_stat_config_zsh_directory.stat.isdir is defined
+        - r_stat_config_zsh_directory.stat.isdir
+        - r_stat_config_zsh_directory.stat.gr_name is defined
+        - r_stat_config_zsh_directory.stat.gr_name == "suzanne"
+        - r_stat_config_zsh_directory.stat.pw_name is defined
+        - r_stat_config_zsh_directory.stat.pw_name == "suzanne"
+        - r_stat_config_zsh_directory.stat.mode == "0755"
+
+  - name: Stat .zshrc file.
+    ansible.builtin.stat:
+      path: "/home/{{ zsh_user }}/.config/zsh/.zshrc"
+    become: true
+    become_user: "{{ zsh_user }}"
+    register: r_stat_zshrc
+
+  - name: Assert .zshrc file exists with correct permissions.
+    ansible.builtin.assert:
+      that:
+        - r_stat_zshrc.stat.isdir is defined
+        - not r_stat_zshrc.stat.isdir
+        - r_stat_zshrc.stat.gr_name is defined
+        - r_stat_zshrc.stat.gr_name == "suzanne"
+        - r_stat_zshrc.stat.pw_name is defined
+        - r_stat_zshrc.stat.pw_name == "suzanne"
+        - r_stat_zshrc.stat.mode == "0644"
+
+  - name: Assert .zshrc contains correct "export LANG=..." line
+    # See: https://stackoverflow.com/questions/38461920/ansible-check-if-string-exists-in-file
+    ansible.builtin.lineinfile:
+      dest: "{{ zsh_xdg_config_home }}/zsh/.zshrc"
+      line: "export LANG=en_US.UTF-8"
+    check_mode: yes
+    register: r_zshrc_lang_presence
+    failed_when: r_zshrc_lang_presence.changed
+
+  - name: Assert .zshrc contains correct "export ZDOTDIR=..." line
+    # See: https://stackoverflow.com/questions/38461920/ansible-check-if-string-exists-in-file
+    ansible.builtin.lineinfile:
+      dest: "{{ zsh_xdg_config_home }}/zsh/.zshrc"
+      line: "export ZDOTDIR=\"$XDG_CONFIG_HOME/zsh\""
+    check_mode: yes
+    register: r_zshrc_lang_presence
+    failed_when: r_zshrc_lang_presence.changed
+  
+  - name: Assert .zshrc contains correct "export ZSH_THEME=..." line
+    # See: https://stackoverflow.com/questions/38461920/ansible-check-if-string-exists-in-file
+    ansible.builtin.lineinfile:
+      dest: "{{ zsh_xdg_config_home }}/zsh/.zshrc"
+      line: "export ZSH_THEME=\"agnoster\""
+    check_mode: yes
+    register: r_zshrc_theme_presence
+    failed_when: r_zshrc_theme_presence.changed
+
+  - name: Stat ~/.config/zsh/oh-my-zsh/.git directory.
+    ansible.builtin.stat:
+      path: "/home/{{ zsh_user }}/.config/zsh"
+    become: true
+    become_user: "{{ zsh_user }}"
+    register: r_stat_config_omz_git_directory
+
+  - name: Assert ~/.config/zsh/oh-my-zsh/.git directory exists with correct permissions.
+    ansible.builtin.assert:
+      that:
+        - r_stat_config_omz_git_directory.stat.isdir is defined
+        - r_stat_config_omz_git_directory.stat.isdir
+        - r_stat_config_omz_git_directory.stat.gr_name is defined
+        - r_stat_config_omz_git_directory.stat.gr_name == "suzanne"
+        - r_stat_config_omz_git_directory.stat.pw_name is defined
+        - r_stat_config_omz_git_directory.stat.pw_name == "suzanne"
+        - r_stat_config_omz_git_directory.stat.mode == "0755"

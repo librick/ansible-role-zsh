@@ -1,0 +1,41 @@
+export ZSH_THEME="agnoster"
+
+export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+export HISTFILE="$ZDOTDIR/.zsh_history"
+export HISTSIZE=10000
+export SAVEHIST=10000
+export LANG=en_US.UTF-8
+export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$PATH:/usr/local/go/bin
+export PATH=$PATH:$HOME/.local/share/cargo/bin
+export PATH=$PATH:$HOME/.local/bin
+export PATH=$PATH:$HOME/.local/bin/platform-tools
+export PATH=$PATH:/usr/local/go/bin
+export EDITOR="nvim"
+export VISUAL="nvim"
+export PROMPT="%n@%m%# "
+export XDG_DATA_DIRS="$XDG_DATA_DIRS:/var/lib/flatpak/exports/share"
+export XDG_DATA_DIRS="$XDG_DATA_DIRS:$HOME/.local/share/flatpak/exports/share"
+
+export CARGO_HOME="$XDG_DATA_HOME"/cargo
+export RUSTUP_HOME="$XDG_DATA_HOME"/rustup
+export ANDROID_HOME="$XDG_DATA_HOME"/android
+export GNUPGHOME="$XDG_DATA_HOME"/gnupg
+export GOPATH="$XDG_DATA_HOME"/go
+export GRADLE_USER_HOME="$XDG_DATA_HOME"/gradle
+export GTK2_RC_FILES="$XDG_CONFIG_HOME"/gtk-2.0/gtkrc
+export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
+export ELECTRUMDIR="$XDG_DATA_HOME/electrum"
+export IPFS_PATH="$XDG_DATA_HOME"/ipfs
+export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="$XDG_CONFIG_HOME"/java
+export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig
+export LESSHISTFILE=-
+export MOZ_ENABLE_WAYLAND=1
+
+alias wget=wget --hsts-file="$XDG_DATA_HOME/wget-hsts"
+alias ls='lsd -ahl --color=auto --group-dirs=first'
+alias sl='ls'
+alias lls='ls'
+alias v='vim'
+alias vi='vim'
+unset LESS;
